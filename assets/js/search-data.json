@@ -117,7 +117,7 @@
   
       ,"page1": {
           "title": "About Me",
-          "content": "This is where you put the contents of your About page. Like all your pages, it’s in Markdown format. . This website is powered by fastpages 1. . a blogging platform that natively supports Jupyter notebooks in addition to other formats. &#8617; . |",
+          "content": "Application Developer at Tata Consultancy Services . Developing Machine Learning, Java and Native Android Applications. . Have worked under various clients such as Walmart, Home Depot, Century Link, Qantas, Nielsen, Vodafone Hutchison Australia since Nov 2011. . Education . M.Tech in Software Systems - BITS Pilani (2013-2015) . B.Tech in Information Technology - Anna University (2007-2011) . Hobbies . Playing Cricket, Listening Music, watching YouTube and now starting to blog . Programming . I programming. I love to code and develop interesting stuff myself. . I have developed passion towards machine learning and started working for more than 2 years. Have been certified for Deep Learning Specialisation and Advanced Machine Learning with TensorFlow on Google Cloud Platformin Coursera. . Also, I am also certified in Android Application Development .I have developed few android apps myself and put on Play Store .",
           "url": "https://nareshr8.github.io/ml_posts/about/",
           "relUrl": "/about/",
           "date": ""
