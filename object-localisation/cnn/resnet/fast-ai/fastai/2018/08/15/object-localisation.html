@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Object Localization | fastpages</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Object Localization" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Identify where the stamp is available in the image" />
+<meta property="og:description" content="Identify where the stamp is available in the image" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-15T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2018-08-15T00:00:00-05:00","headline":"Object Localization","description":"Identify where the stamp is available in the image","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html","dateModified":"2018-08-15T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/ml_posts/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/ml_posts/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Object Localization | fastpages</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Object Localization" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Identify where the stamp is available in the image" />
+<meta property="og:description" content="Identify where the stamp is available in the image" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-15T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2018-08-15T00:00:00-05:00","headline":"Object Localization","description":"Identify where the stamp is available in the image","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html","dateModified":"2018-08-15T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="fastpages" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/ml_posts/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/ml_posts/about/">About Me</a><a class="page-link" href="/ml_posts/search/">Search</a><a class="page-link" href="/ml_posts/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Object Localization</h1><p class="page-description">Identify where the stamp is available in the image</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-08-15T00:00:00-05:00" itemprop="datePublished">
+        Aug 15, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#object-localisation">object-localisation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#CNN">CNN</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#ResNet">ResNet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#fast-ai">fast-ai</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#fastai">fastai</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#problem-statement">Problem Statement</a></li>
+<li class="toc-entry toc-h1"><a href="#why-data-augmentation">Why Data Augmentation</a></li>
+<li class="toc-entry toc-h1"><a href="#data-augmentation">Data Augmentation</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#image-crawling">Image Crawling</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#why-crawl-thousands-of-images">Why crawl thousands of images?</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#image-super-imposition">Image Super-Imposition</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#training-the-model">Training the Model</a></li>
+<li class="toc-entry toc-h1"><a href="#other-variants">Other variants</a></li>
+<li class="toc-entry toc-h1"><a href="#improvisation">Improvisation</a></li>
+</ul><p>Today, we work for a particular problem statement, image localization. Image Localization basically means that we will look into a given image and not just say whether a stamp is available in the picture or not but also where it is, if available.</p>
+
+<p>The problem statement is easy for a kid to perform, but was impossible few years back for even super computers to accurately say like a kid. Thanks to the advancement in computational power and deep learning literature, we are now able to make computers do this task.</p>
+
+<p>We are using a python library “Fast AI” to perform this task. If you are little unfamiliar with Fast AI, checkout fast.ai. It’s the easiest way to get your hands on machine learning and do some exciting tasks straight up.</p>
+
+<h1 id="problem-statement">
+<a class="anchor" href="#problem-statement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem Statement</h1>
+<p>Your company sends the manufactured products out of the garage only when they have been tested. The tested products have a seal like this:<img src="../img/stamp-image.png" alt="Stamp Image"></p>
+
+<p>You are a data scientist or a machine learning engineer who is trying to use computers to check if the product is tested or not instead of humans, as it speeds up the disposal of the products.</p>
+<h1 id="why-data-augmentation">
+<a class="anchor" href="#why-data-augmentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Data Augmentation</h1>
+<p>Most of the time the company doesnt have enough images to perform machine learning tasks on. This is also a typical case in your company. Your company can only give you the image of the stamp. You try to collect the data yourself. However, You need a camera to take pictures on the product’s cover art so that you can collect thousands of images. Your company asks for a proof that your product will work before it can install the camera on the product disposal area. This lands you in a place where you have to get the product working before the main component of the product (data) is available. So, we have to augment the data.</p>
+<h1 id="data-augmentation">
+<a class="anchor" href="#data-augmentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Augmentation</h1>
+<p>We plan to augment whatever data is needed. We crawl through the web and pull images of various products and superimpose this stamp over them to create data that we are looking for. We thereby have a set of images that is available with/without stamp and the location if its available.</p>
+<h2 id="image-crawling">
+<a class="anchor" href="#image-crawling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Image Crawling</h2>
+<p>For image crawling in python we have a library ‘icrawler’, which I have used and seem to pull images from different data sources like Google, Bing, Baidu. We can use the crawler to pull the images from internet. The working crawler notebook is available <a href="https://github.com/nareshr8/Image-Localisation/blob/master/crawler.ipynb">here</a>.</p>
+
+<h3 id="why-crawl-thousands-of-images">
+<a class="anchor" href="#why-crawl-thousands-of-images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why crawl thousands of images?</h3>
+<p>If we have only 10 images in training set as background and superimpose the stamp in various locations, there is a possibility of overfitting, meaning that the machine will try to remove the 10 possible backgrounds and check if any of the remaining pixel is having the value, instead of looking at the stamp. Which will not be the ideal scenario for the actual images. So, even if its augmentation, the more data the better.</p>
+<h2 id="image-super-imposition">
+<a class="anchor" href="#image-super-imposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Image Super-Imposition</h2>
+<p>I have used PIL library to super impose the images. The image preprocessing is done in <a href="https://github.com/nareshr8/Image-Localisation/blob/master/Image%20PreProcessing.ipynb">this</a> notebook.</p>
+<h1 id="training-the-model">
+<a class="anchor" href="#training-the-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training the Model</h1>
+<p>For training the model, we train the model using the notebook that is available <a href="https://github.com/nareshr8/Image-Localisation/blob/master/Localisation.ipynb">here</a>.</p>
+<h1 id="other-variants">
+<a class="anchor" href="#other-variants" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other variants</h1>
+<p>Here we used only one stamp and we are checking if that particular stamp is available. Instead, we can generate data with all the variety of labels with all variants of stamps as well and pretty much follow the same procedure. We would be able to train the model to check for any of the stamps is available and the location.
+	The other alternative is Person Tagging. Similar to stamps, we can give a set of images with people faces and ask the machine to tag the person’s face on the image.</p>
+<h1 id="improvisation">
+<a class="anchor" href="#improvisation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Improvisation</h1>
+<p>As part of improvising, we can</p>
+<ul>
+  <li>tag multiple items on the same image.</li>
+  <li>identify each class of the tagged image.</li>
+  <li>Use this process as part of a end to end solution. 
+      <br><i>For example, if we want to know the price of a product, we naturally find the location where the price is listed. After localizing the place where the price is listed, we try to read the price. We can do the same with machines to understand the price of the product. </i>
+</li>
+  <li>Use to develop Optical Character Recognition. We tag each character and a classifier that classifies between A-Z and Numbers. The characters with lesser space between them forms a word.</li>
+</ul>
+
+<p>I may try some of these myself and post if something really cool works out.</p>
+
+<p>Post your comments and let know your views on this.</p>
+
+
+  </div><a class="u-url" href="/ml_posts/object-localisation/cnn/resnet/fast-ai/fastai/2018/08/15/object-localisation.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/ml_posts/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/ml_posts/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/ml_posts/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

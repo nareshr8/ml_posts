@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Preprocessing Structured Data For Machine Learning - I | fastpages</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Preprocessing Structured Data For Machine Learning - I" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Preprocessing data in Python" />
+<meta property="og:description" content="Preprocessing data in Python" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-05-21T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2018-05-21T00:00:00-05:00","headline":"Preprocessing Structured Data For Machine Learning - I","description":"Preprocessing data in Python","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html","dateModified":"2018-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/ml_posts/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/ml_posts/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Preprocessing Structured Data For Machine Learning - I | fastpages</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Preprocessing Structured Data For Machine Learning - I" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Preprocessing data in Python" />
+<meta property="og:description" content="Preprocessing data in Python" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-05-21T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2018-05-21T00:00:00-05:00","headline":"Preprocessing Structured Data For Machine Learning - I","description":"Preprocessing data in Python","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html","dateModified":"2018-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="fastpages" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/ml_posts/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/ml_posts/about/">About Me</a><a class="page-link" href="/ml_posts/search/">Search</a><a class="page-link" href="/ml_posts/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Preprocessing Structured Data For Machine Learning - I</h1><p class="page-description">Preprocessing data in Python</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-05-21T00:00:00-05:00" itemprop="datePublished">
+        May 21, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#preprocessing">preprocessing</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#machine-learning">machine-learning</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#why-data-preprocessing">Why Data Preprocessing?</a></li>
+<li class="toc-entry toc-h1"><a href="#prerequisites">Prerequisites</a></li>
+<li class="toc-entry toc-h1"><a href="#preprocessing-steps">Preprocessing Steps</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#getting-list-of-missing-values">Getting list of Missing Values</a></li>
+<li class="toc-entry toc-h4"><a href="#getting-list-of-columns-with-missing-count">Getting List of Columns with missing count</a></li>
+<li class="toc-entry toc-h4"><a href="#get-labels-which-doesnt-have-enough-data">Get labels which doesn’t have enough data</a></li>
+</ul>
+</li>
+</ul><p>Preprocessing the data is the first part of any machine learning project that we take up. This blog post, being my first ever, will start to discuss about preprocessing of data in python. I used Jupyter Notebook/lab as the IDE of preference along side Python 3.</p>
+
+<h1 id="why-data-preprocessing">
+<a class="anchor" href="#why-data-preprocessing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Data Preprocessing?</h1>
+
+<p>Data Preprocessing ensures that the data is available in the right format for machine learning to be performed.</p>
+
+<p>The golden rule for any machine learning project is more the data, the better. So, We might collect data from various sources. All data may not be good straight away for starting machine learning. We may run into one or many of these problems, most of the time:</p>
+
+<ul>
+  <li>
+<strong>Missing Data</strong> - Some columns might be missing in some rows.</li>
+  <li>
+<strong>Incorrect Data</strong> - Some data might have been wrong due to manual entry or inconsistent data source</li>
+  <li>
+<strong>Feature Scaling</strong> - Algorithms such as KNN, SVM prefer uniform distribution among the dataset as it uses distance or similarities between datasets.</li>
+</ul>
+
+<p>Now that the need of preprocessing is felt, we can start to preprocess the data. Here, the theme is to get started building a notebook with functions that are commonly used in preprocessing structured data that can be used for any structured data.</p>
+
+<h1 id="prerequisites">
+<a class="anchor" href="#prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites</h1>
+
+<p>We are using the Following libraries for making our process easier.</p>
+
+<ul>
+  <li>
+    <p>Pandas</p>
+
+    <p>To install run this on your python console :</p>
+
+    <div class="language-shell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="o">!</span>pip <span class="nb">install </span>pandas
+</code></pre></div>    </div>
+
+    <p>​</p>
+  </li>
+  <li>
+    <p>Numpy</p>
+
+    <p>To install run this on your python console :</p>
+
+    <div class="language-shell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="o">!</span>pip <span class="nb">install </span>numpy
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>A simple google might solve the problem if you have any trouble installing these packages.</p>
+
+<h1 id="preprocessing-steps">
+<a class="anchor" href="#preprocessing-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preprocessing Steps</h1>
+
+<p>First we have to import our necessary packages</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+</code></pre></div></div>
+
+<p>Now collect the data into Data Frame. We can collect data from different sources into a Data Frame. Since we are creating the just utilities that take in data frame as input, we can skip this step.</p>
+
+<h4 id="getting-list-of-missing-values">
+<a class="anchor" href="#getting-list-of-missing-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting list of Missing Values</h4>
+
+<p>We may have to deal with the fact that there will be missing values in one or more columns in our dataset. First we may have to take a look on how many columns have missing values. So we can have a helper method do that for us.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_missing_valued_columns_list</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">dataset</span><span class="p">,</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="nb">any</span><span class="p">()]</span>
+</code></pre></div></div>
+
+<p>This gives the list of columns which has missing values.</p>
+
+<p>Now that we see the list of columns which has missing values, we might be interested in knowing how many values among those are missing. If there are columns that misses more than, say 80% of data, we might chose to ignore that column.</p>
+
+<h4 id="getting-list-of-columns-with-missing-count">
+<a class="anchor" href="#getting-list-of-columns-with-missing-count" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting List of Columns with missing count</h4>
+
+<p>Now we look to get the data that shows the list of columns with the count of data that is missing in those column</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_missing_valued_column_details</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+    <span class="n">sum_of_missing_values</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sum_of_missing_values</span><span class="p">[</span><span class="n">sum_of_missing_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Here, we first summed up the count of data that has values as null (along the vertical axis), then we filtered out non empty columns.</p>
+
+<h4 id="get-labels-which-doesnt-have-enough-data">
+<a class="anchor" href="#get-labels-which-doesnt-have-enough-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get labels which doesn’t have enough data</h4>
+
+<p>If our label doesn’t have enough data, we cannot make useful predictions out of the data. Thus, can remove columns that doesn’t have enough data in them.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_low_variance_columns</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+	<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">VarianceThreshold</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">selector</span> <span class="o">=</span> <span class="n">VarianceThreshold</span><span class="p">(</span><span class="mf">.8</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">.8</span><span class="p">))</span>
+    <span class="n">selector</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selector</span><span class="o">.</span><span class="n">get_support</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">labels</span>
+</code></pre></div></div>
+
+<p>Here we are selecting all columns except the last one, as last column is usually the output or prediction column. Then we use VarianceThreshold function thats part of scikit learn library to specify the threshold (.8) to retrieve the list of columns.</p>
+
+<p>I am planning to add other commonly used functions in my next blog post. Comment on your views.</p>
+
+  </div><a class="u-url" href="/ml_posts/preprocessing/machine-learning/2018/05/21/data-pre-processing-i.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/ml_posts/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/ml_posts/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/ml_posts/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
