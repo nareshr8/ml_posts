@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://nareshr8.github.io/ml_posts/feed.xml" rel="self" type="application/atom+xml" /><link href="https://nareshr8.github.io/ml_posts/" rel="alternate" type="text/html" /><updated>2020-04-01T03:11:28-05:00</updated><id>https://nareshr8.github.io/ml_posts/feed.xml</id><title type="html">nareshr8</title><subtitle>Personal Blogging Platform</subtitle><entry><title type="html">Understanding Linear Regression - Basics</title><link href="https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding.html" rel="alternate" type="text/html" title="Understanding Linear Regression - Basics" /><published>2019-01-16T00:00:00-06:00</published><updated>2019-01-16T00:00:00-06:00</updated><id>https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding</id><content type="html" xml:base="https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding.html">&lt;p&gt;The linear regression is the basic building block algorithm for most Machine learning algorithms. It is the simplest machine learning algorithm used for both regression and classification problems. It is used as a building block for most complicated architectures like Neural Network, Convolution Neural Network and Recurrent Neural Network. Hence having a basic understanding for it will give us a great overview of how complicated machine learning architectures are built upon.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://nareshr8.github.io/ml_posts/feed.xml" rel="self" type="application/atom+xml" /><link href="https://nareshr8.github.io/ml_posts/" rel="alternate" type="text/html" /><updated>2020-04-01T03:17:16-05:00</updated><id>https://nareshr8.github.io/ml_posts/feed.xml</id><title type="html">nareshr8</title><subtitle>Personal Blogging Platform</subtitle><entry><title type="html">Understanding Linear Regression - Basics</title><link href="https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding.html" rel="alternate" type="text/html" title="Understanding Linear Regression - Basics" /><published>2019-01-16T00:00:00-06:00</published><updated>2019-01-16T00:00:00-06:00</updated><id>https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding</id><content type="html" xml:base="https://nareshr8.github.io/ml_posts/fast-ai/ml/pytorch/linear-regression/2019/01/16/linear-regression-coding.html">&lt;p&gt;The linear regression is the basic building block algorithm for most Machine learning algorithms. It is the simplest machine learning algorithm used for both regression and classification problems. It is used as a building block for most complicated architectures like Neural Network, Convolution Neural Network and Recurrent Neural Network. Hence having a basic understanding for it will give us a great overview of how complicated machine learning architectures are built upon.&lt;/p&gt;
 
 &lt;h2 id=&quot;basics&quot;&gt;Basics&lt;/h2&gt;
 
@@ -26280,10 +26280,10 @@ epoch  train loss  valid loss  accuracy
 &lt;p&gt;As a sample we take the task to predict the housing price of the houses in portland based on the size of the house.&lt;/p&gt;
 
 &lt;p&gt;We take this as a base sample data to understand the uni-variant linear regression problem. As we plot the price to size in a graph. It looks like the following.
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images/2e881f1d.png&quot; alt=&quot;Housing Price Graph&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images/2e881f1d.png&quot; alt=&quot;Housing Price Graph&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Our goal is to develop a machine learning algorithm that can train itself to find a function that can draw a line as below so that, when a new data, say house with size as 1250 feet², using the line, we could easily predict the price to be around $220K.
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images/d3fc0ee1.png&quot; alt=&quot;Predicted Housing Price&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images/d3fc0ee1.png&quot; alt=&quot;Predicted Housing Price&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;notations&quot;&gt;Notations&lt;/h3&gt;
 
@@ -26337,7 +26337,7 @@ epoch  train loss  valid loss  accuracy
 &lt;h3 id=&quot;model&quot;&gt;Model&lt;/h3&gt;
 
 &lt;p&gt;The System gets the training set, uses some algorithm to learn the hypothesis function. Using the hypothesis function (also called the model), we predict the price for any new given size of the house.
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images\7b1d86bb.png&quot; alt=&quot;Price Prediction&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images\7b1d86bb.png&quot; alt=&quot;Price Prediction&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Hypothesis(h) is the function that maps the input X to the output Y, such that &lt;code class=&quot;highlighter-rouge&quot;&gt;Y=h(X)&lt;/code&gt;.&lt;/p&gt;
 
@@ -26348,18 +26348,18 @@ epoch  train loss  valid loss  accuracy
 &lt;/blockquote&gt;
 
 &lt;p&gt;So, For &lt;strong&gt;Θ&lt;sub&gt;0&lt;/sub&gt;=1.5&lt;/strong&gt; and &lt;strong&gt;Θ&lt;sub&gt;1&lt;/sub&gt;=0&lt;/strong&gt; the hypothesis looks like:
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images\084a51aa.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images\084a51aa.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;And For &lt;strong&gt;Θ&lt;sub&gt;0&lt;/sub&gt;=0&lt;/strong&gt; and &lt;strong&gt;Θ&lt;sub&gt;1&lt;/sub&gt;=0.5&lt;/strong&gt; the hypothesis looks like:
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images\717415b9.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images\717415b9.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;So, For &lt;strong&gt;Θ&lt;sub&gt;1&lt;/sub&gt;=0&lt;/strong&gt; and &lt;strong&gt;Θ&lt;sub&gt;1&lt;/sub&gt;=0.5&lt;/strong&gt; the hypothesis looks like:
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images\636e7675.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images\636e7675.png&quot; alt=&quot;Hypothesis Function&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;cost-function&quot;&gt;Cost Function&lt;/h3&gt;
 
 &lt;p&gt;Now, lets bring the graph and training examples together.
-&lt;img src=&quot;../images/posts/2018-10-03-linear-regression_images\56c08adc.png&quot; alt=&quot;Hypothesis Function with training examples&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/ml_posts/images/posts/2018-10-03-linear-regression_images\56c08adc.png&quot; alt=&quot;Hypothesis Function with training examples&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Here, the hypothesis function is the line for a given  Θ&lt;sub&gt;0&lt;/sub&gt; and  Θ&lt;sub&gt;1&lt;/sub&gt;. And the X denotes the training data for say, the housing price.&lt;/p&gt;
 

@@ -151,10 +151,10 @@ window.onload = wrap_img;
 <p>As a sample we take the task to predict the housing price of the houses in portland based on the size of the house.</p>
 
 <p>We take this as a base sample data to understand the uni-variant linear regression problem. As we plot the price to size in a graph. It looks like the following.
-<img src="../images/posts/2018-10-03-linear-regression_images/2e881f1d.png" alt="Housing Price Graph"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images/2e881f1d.png" alt="Housing Price Graph"></p>
 
 <p>Our goal is to develop a machine learning algorithm that can train itself to find a function that can draw a line as below so that, when a new data, say house with size as 1250 feet², using the line, we could easily predict the price to be around $220K.
-<img src="../images/posts/2018-10-03-linear-regression_images/d3fc0ee1.png" alt="Predicted Housing Price"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images/d3fc0ee1.png" alt="Predicted Housing Price"></p>
 
 <h3 id="notations">
 <a class="anchor" href="#notations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notations</h3>
@@ -210,7 +210,7 @@ window.onload = wrap_img;
 <a class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model</h3>
 
 <p>The System gets the training set, uses some algorithm to learn the hypothesis function. Using the hypothesis function (also called the model), we predict the price for any new given size of the house.
-<img src="../images/posts/2018-10-03-linear-regression_images%5C7b1d86bb.png" alt="Price Prediction"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images%5C7b1d86bb.png" alt="Price Prediction"></p>
 
 <p>Hypothesis(h) is the function that maps the input X to the output Y, such that <code class="highlighter-rouge">Y=h(X)</code>.</p>
 
@@ -221,19 +221,19 @@ window.onload = wrap_img;
 </blockquote>
 
 <p>So, For <strong>Θ<sub>0</sub>=1.5</strong> and <strong>Θ<sub>1</sub>=0</strong> the hypothesis looks like:
-<img src="../images/posts/2018-10-03-linear-regression_images%5C084a51aa.png" alt="Hypothesis Function"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images%5C084a51aa.png" alt="Hypothesis Function"></p>
 
 <p>And For <strong>Θ<sub>0</sub>=0</strong> and <strong>Θ<sub>1</sub>=0.5</strong> the hypothesis looks like:
-<img src="../images/posts/2018-10-03-linear-regression_images%5C717415b9.png" alt="Hypothesis Function"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images%5C717415b9.png" alt="Hypothesis Function"></p>
 
 <p>So, For <strong>Θ<sub>1</sub>=0</strong> and <strong>Θ<sub>1</sub>=0.5</strong> the hypothesis looks like:
-<img src="../images/posts/2018-10-03-linear-regression_images%5C636e7675.png" alt="Hypothesis Function"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images%5C636e7675.png" alt="Hypothesis Function"></p>
 
 <h3 id="cost-function">
 <a class="anchor" href="#cost-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cost Function</h3>
 
 <p>Now, lets bring the graph and training examples together.
-<img src="../images/posts/2018-10-03-linear-regression_images%5C56c08adc.png" alt="Hypothesis Function with training examples"></p>
+<img src="/ml_posts/images/posts/2018-10-03-linear-regression_images%5C56c08adc.png" alt="Hypothesis Function with training examples"></p>
 
 <p>Here, the hypothesis function is the line for a given  Θ<sub>0</sub> and  Θ<sub>1</sub>. And the X denotes the training data for say, the housing price.</p>
 
