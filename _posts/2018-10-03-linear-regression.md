@@ -15,10 +15,10 @@ Linear Regression is a class of supervised machine learning where we look for th
 As a sample we take the task to predict the housing price of the houses in portland based on the size of the house.
 
 We take this as a base sample data to understand the uni-variant linear regression problem. As we plot the price to size in a graph. It looks like the following.
-![Housing Price Graph](../img/posts/.2018-10-03-linear-regression_images/2e881f1d.png)
+![Housing Price Graph](../images/posts/2018-10-03-linear-regression_images/2e881f1d.png)
 
 Our goal is to develop a machine learning algorithm that can train itself to find a function that can draw a line as below so that, when a new data, say house with size as 1250 feet², using the line, we could easily predict the price to be around $220K.
-![Predicted Housing Price](../img/posts/.2018-10-03-linear-regression_images/d3fc0ee1.png)
+![Predicted Housing Price](../images/posts/2018-10-03-linear-regression_images/d3fc0ee1.png)
 
 ### Notations
 
@@ -48,7 +48,7 @@ So, in the above example, X(1)=2104 and Y(3)=315.
 ### Model
 
 The System gets the training set, uses some algorithm to learn the hypothesis function. Using the hypothesis function (also called the model), we predict the price for any new given size of the house.
-![Price Prediction](../img/posts/.2018-10-03-linear-regression_images\7b1d86bb.png)
+![Price Prediction](../images/posts/2018-10-03-linear-regression_images\7b1d86bb.png)
 
 Hypothesis(h) is the function that maps the input X to the output Y, such that `Y=h(X)`. 
 
@@ -57,19 +57,19 @@ The hypothesis can be represented as the following formula, for a uni-variant mo
 <br>where Θ<sub>0</sub> and Θ<sub>1</sub> are parameters of the model
 
 So, For **Θ<sub>0</sub>=1.5** and **Θ<sub>1</sub>=0** the hypothesis looks like:
-![Hypothesis Function](../img/posts/.2018-10-03-linear-regression_images\084a51aa.png)
+![Hypothesis Function](../images/posts/2018-10-03-linear-regression_images\084a51aa.png)
 
 And For **Θ<sub>0</sub>=0** and **Θ<sub>1</sub>=0.5** the hypothesis looks like:
-![Hypothesis Function](../img/posts/.2018-10-03-linear-regression_images\717415b9.png)
+![Hypothesis Function](../images/posts/2018-10-03-linear-regression_images\717415b9.png)
 
 So, For **Θ<sub>1</sub>=0** and **Θ<sub>1</sub>=0.5** the hypothesis looks like:
-![Hypothesis Function](../img/posts/.2018-10-03-linear-regression_images\636e7675.png)
+![Hypothesis Function](../images/posts/2018-10-03-linear-regression_images\636e7675.png)
 
 
 ### Cost Function
 
 Now, lets bring the graph and training examples together.
-![Hypothesis Function with training examples](../img/posts/.2018-10-03-linear-regression_images\56c08adc.png)
+![Hypothesis Function with training examples](../images/posts/2018-10-03-linear-regression_images\56c08adc.png)
 
 Here, the hypothesis function is the line for a given  Θ<sub>0</sub> and  Θ<sub>1</sub>. And the X denotes the training data for say, the housing price.
 
