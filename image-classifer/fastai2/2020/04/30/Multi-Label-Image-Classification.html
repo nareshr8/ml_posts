@@ -1027,7 +1027,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We need <code>DataLoaders</code> to point out the list of transformations that are to be done to the data for preparing for training. Luckily, we have <code>ImageDataLoaders.from_df</code> method to get an handy function for generating the dataloader. We use that here</p>
+<p>We need <code>DataLoaders</code> to point out the list of transformations that are to be done to the data for preparing for training. Luckily, we have <code>ImageDataLoaders.from_df</code> method to get an handy function for generating the dataloader. But it doesnt have provision to provide a uni channel Image. So we do some edit of the same method.</p>
 
 </div>
 </div>
@@ -1044,8 +1044,7 @@ window.onload = wrap_img;
 <li>
 <code>suff</code> is the suffix that must be added to all the filenames. In short the file extensions</li>
 <li>
-<code>label_delim</code> specifies the delimiter that segregates two labels apart (in the <code>label_col</code>
-</li>
+<code>label_delim</code> specifies the delimiter that segregates two labels apart (in the <code>label_col</code>)</li>
 <li>
 <code>item_tfms</code> specifies the item level transformations that must be done. Here we are just doing resizing of original image to 224*224 image size. <blockquote>
 <p>The idea of using Squish to resize was because I am guessing cropping might remove some of the features. Especially after looking at some label names like <code>loop_scattering</code> , <code>non-uniform_detector</code> or <code>strong_background</code>. <code>loop_scattering</code> is fairly obvious there seems to be some disturbance in the rings which is that that obvious in the inner rings. cropping might not be that useful.</p>
