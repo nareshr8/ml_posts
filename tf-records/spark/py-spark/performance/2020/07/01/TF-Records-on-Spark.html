@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using TF-Records on Spark Cluster | nareshr8</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Using TF-Records on Spark Cluster" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Creating and Reading TF Records on Spark Cluster" />
+<meta property="og:description" content="Creating and Reading TF Records on Spark Cluster" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html" />
+<meta property="og:site_name" content="nareshr8" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-01T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2020-07-01T00:00:00-05:00","headline":"Using TF-Records on Spark Cluster","description":"Creating and Reading TF Records on Spark Cluster","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html","dateModified":"2020-07-01T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/ml_posts/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="nareshr8" /><link rel="shortcut icon" type="image/x-icon" href="/ml_posts/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using TF-Records on Spark Cluster | nareshr8</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Using TF-Records on Spark Cluster" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Creating and Reading TF Records on Spark Cluster" />
+<meta property="og:description" content="Creating and Reading TF Records on Spark Cluster" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html" />
+<meta property="og:site_name" content="nareshr8" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-01T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2020-07-01T00:00:00-05:00","headline":"Using TF-Records on Spark Cluster","description":"Creating and Reading TF Records on Spark Cluster","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html"},"@type":"BlogPosting","url":"https://nareshr8.github.io/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html","dateModified":"2020-07-01T00:00:00-05:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="nareshr8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/ml_posts/">nareshr8</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/ml_posts/about/">About Me</a><a class="page-link" href="/ml_posts/search/">Search</a><a class="page-link" href="/ml_posts/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using TF-Records on Spark Cluster</h1><p class="page-description">Creating and Reading TF Records on Spark Cluster</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-07-01T00:00:00-05:00" itemprop="datePublished">
+        Jul 1, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#TF-Records">TF-Records</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#Spark">Spark</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#Py-Spark">Py-Spark</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#Performance">Performance</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/nareshr8/ml_posts/tree/master/_notebooks/2020-07-01-TF-Records-on-Spark.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/ml_posts/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/nareshr8/ml_posts/master?filepath=_notebooks%2F2020-07-01-TF-Records-on-Spark.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/ml_posts/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/nareshr8/ml_posts/blob/master/_notebooks/2020-07-01-TF-Records-on-Spark.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/ml_posts/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Creating-TF-Records">Creating TF-Records </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Library-required">Library required </a></li>
+<li class="toc-entry toc-h3"><a href="#Writing-the-Tf-Records">Writing the Tf-Records </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Reading-TF-Records">Reading TF-Records </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Infering-Schema">Infering Schema </a></li>
+<li class="toc-entry toc-h3"><a href="#Create-features-from-column-dictionary">Create features from column dictionary </a></li>
+<li class="toc-entry toc-h3"><a href="#Decoding">Decoding </a></li>
+<li class="toc-entry toc-h3"><a href="#Read-data-using-tf.data">Read data using tf.data </a></li>
+<li class="toc-entry toc-h3"><a href="#Training-the-module">Training the module </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+<li class="toc-entry toc-h2"><a href="#Useful-Sources:">Useful Sources: </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-07-01-TF-Records-on-Spark.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>TF-Records abbreviated as TensorFlow Records is one the data formats that has serveral benefits such as performance (time) of the Tensorflow training. Using just TF-Records, I was able to get a direct decrease the training time 3x times.</p>
+<p>Most of the example blogs on TF-Records however, had images as example. I was working on a usecase of training a tabular data on spark cluster. I am posting this blog for easing out TF-Records adoption for scenarios such as mine. Hope this is useful.
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
+    <strong>Note: </strong>The intention of this post is about how to use TF-Records for better performances. We could run the training distributed across the cluster.Tensorflow API supports distributed training. We could also try <code>Horovod</code> which uses <code>Petastorm</code> file format to train the data in the spark cluster. But those topics are beyond the scope of this post
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Some Advantage of TF-Records are that, it</p>
+<ul>
+<li>serialises data and stores. This means reduced space requirement for storage, faster data read and copy</li>
+<li>uses <a href="https://developers.google.com/protocol-buffers">Protocol Buffer</a> format to store data which makes reading of data faster. </li>
+<li>loads only required data into the memory. This is useful expecially for large datasets</li>
+<li>The data is never brought to Python level and is always dealt with C++ level which makes training faster</li>
+<li>Tensorflow moves the data to GPU while training is performed</li>
+</ul>
+<p>But to save/retrieve the records in TF-Records format, we need to have schema information to it which makes the process of creating TF-Records different from CSV / Excel / SQL. 
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
+    <strong>Note: </strong>CSV/Excel doesn’t need even column names to both read and write. SQL doesn’t need datatype for querying however might need column name if we need only a specified column. This is not the case for TF Records. It need both name and its data-type for both write and read operations
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-TF-Records">
+<a class="anchor" href="#Creating-TF-Records" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating TF-Records<a class="anchor-link" href="#Creating-TF-Records"> </a>
+</h2>
+<p>The first step is to write the data in the desired TF-Records format. The basic way to create TF-Records is to use <code>tf.python_io.TFRecordWriter</code> API. But there is a simpler way to create TF-Records in Spark cluster.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Library-required">
+<a class="anchor" href="#Library-required" aria-hidden="true"><span class="octicon octicon-link"></span></a>Library required<a class="anchor-link" href="#Library-required"> </a>
+</h3>
+<p>Creating the TF-Records in Spark cluster is easy. Thanks to the library <code>spark-tensorflow-connector_2.11-1.10.0.jar</code>.
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
+    <strong>Note: </strong>We are skipping the part on how we install this library into the cluster. This is a JAR install on the cluster and is usually generic. Also note that this library is needed only needed to create TF-Records. since we use Tensorflow (<code>tf.data</code> API) to read the data, we might not have to bother installing this library if we are using TF-Records created else where.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Writing-the-Tf-Records">
+<a class="anchor" href="#Writing-the-Tf-Records" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writing the Tf-Records<a class="anchor-link" href="#Writing-the-Tf-Records"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The API is so neat and simple to create TF-Records. Since the schema can be infered from the dataframe itself, we need not provide the same to write the data. This might not be the case when we use the traditional <code>TFRecordWriter</code>.</p>
+<p>Suppose you have a spark-dataframe <code>preprocessed_df</code>. The easiest way to create the TF-Records is :</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessed_df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'tfrecords'</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path_to_save</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We could save the data in an actual spark table as an backup.
+</p>
+<div class="flash flash-success">
+    <svg class="octicon octicon-checklist octicon octicon-checklist" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M16 8.5l-6 6-3-3L8.5 10l1.5 1.5L14.5 7 16 8.5zM5.7 12.2l.8.8H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h7c.55 0 1 .45 1 1v6.5l-.8-.8c-.39-.39-1.03-.39-1.42 0L5.7 10.8a.996.996 0 000 1.41v-.01zM4 4h5V3H4v1zm0 2h5V5H4v1zm0 2h3V7H4v1zM3 9H2v1h1V9zm0-2H2v1h1V7zm0-2H2v1h1V5zm0-2H2v1h1V3z"></path></svg>
+    <strong>Tip: </strong>We might have to read the data from TF-Records for non tensorflow purpose as well (like data analysis). But it is typically slow to read the data (even using <code>spark.read</code> API)  compared to saving it as spark table (as <code>parquet</code> files). So I have a copy of the data in spark table and one in TF-Records format. I am using the spark table that I use for analysis of data to infer schema for retrieving the TF-Records. If you dont like to dump the data, all you need is the list of columns and its type to decode the data in the end.
+</div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessed_df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'parquet'</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">'overwrite'</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="n">preprocessed_table_name</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Reading-TF-Records">
+<a class="anchor" href="#Reading-TF-Records" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reading TF-Records<a class="anchor-link" href="#Reading-TF-Records"> </a>
+</h2>
+<p>To read the TF-Records for usage in tensorflow, we can use the <code>tf.data</code> API.</p>
+<p>As discussed, TF-Records have a catch that to read the data from TF-Record files, we need to know the schema of the data to read/decode the files. Since we have spark table stored, we infer its schema from the spark table that we already saved.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Infering-Schema">
+<a class="anchor" href="#Infering-Schema" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infering Schema<a class="anchor-link" href="#Infering-Schema"> </a>
+</h3>
+<p>To read the records we need to have the list of features and their types, we could use the schema of the spark table.</p>
+<p>So we just read the spark table that we already stored to infer its schema</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preprocessed_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">preprocessed_table_name</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We collect the schema dtypes as key/value pair into a dictionary</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">column_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">dtype</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span><span class="n">dtype</span> <span class="ow">in</span> <span class="n">preprocessed_df</span><span class="o">.</span><span class="n">dtypes</span><span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Create-features-from-column-dictionary">
+<a class="anchor" href="#Create-features-from-column-dictionary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create features from column dictionary<a class="anchor-link" href="#Create-features-from-column-dictionary"> </a>
+</h3>
+<p>Now that we have the column dictionary, we have to create a features dictionary where we specify if the data is <em>FixedLenFeature</em> (typically for mandatory data) or <em>VarLenFeature</em> (typically for optional variables) and its data-type. I use <code>FixedLenFeature</code> as I dont have missing values</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="c1"># Since we have all fixed length features, we create a lambda helper function to create features </span>
+<span class="n">_fixed_feature</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">create_features</span><span class="p">(</span><span class="n">dtype_dict</span><span class="p">):</span>
+  <span class="n">features</span><span class="o">=</span><span class="p">{}</span>
+  <span class="k">for</span> <span class="n">dtype_tup</span> <span class="ow">in</span> <span class="n">dtype_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">dtype_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'int'</span><span class="p">,</span><span class="s1">'bigint'</span><span class="p">,</span><span class="s1">'integer'</span><span class="p">):</span>
+      <span class="n">features</span><span class="p">[</span><span class="n">dtype_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_fixed_feature</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dtype_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'double'</span><span class="p">,</span><span class="s1">'float'</span><span class="p">,</span><span class="s1">'long'</span><span class="p">):</span>
+      <span class="n">features</span><span class="p">[</span><span class="n">dtype_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_fixed_feature</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dtype_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'string'</span><span class="p">):</span>
+      <span class="n">features</span><span class="p">[</span><span class="n">dtype_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_fixed_feature</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have created the function, we can create features using that function <code>create_feature</code></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">create_features</span><span class="p">(</span><span class="n">column_dtypes</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Decoding">
+<a class="anchor" href="#Decoding" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decoding<a class="anchor-link" href="#Decoding"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Having created the features we could decode the TF-Records. To simplify the process we create a decode method.</p>
+<p>Initially I used <code>tf.io.Example</code> API to decode. It down performed the training time as compared to training from CSV file, since it decodes one record at a time.
+</p>
+<div class="flash flash-warn">
+    <svg class="octicon octicon-zap" viewbox="0 0 10 16" version="1.1" width="10" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10 7H6l3-7-9 9h4l-3 7 9-9z"></path></svg>
+    <strong>Important: </strong>If you used the common <code>tf.io.Example</code> API, you might face performance lag in decoding. This is because the data is decoded one record at a time. use of <code>tf.io.parse_example</code> will parse the data of the entire batch (refer the <a href="https://www.tensorflow.org/api_docs/python/tf/io/parse_example">documentation</a> for more understanding).
+</div>
+It is to be noted that while decoding the serial data we must return a tuple of independent and dependent variables. But the data we stored doesnt have the knowledge of which columns constitute to both. Hence we might have to handle that in our decode method
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">output_cols</span><span class="o">=</span><span class="p">{}</span> <span class="c1"># Specify the single or list of columns that are dependent variables</span>
+<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">serial_data</span><span class="p">):</span>
+  <span class="c1"># We use `parse_example` instead of `Example` for decoding in batches</span>
+  <span class="n">parsed_data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_example</span><span class="p">(</span><span class="n">serialized</span><span class="o">=</span><span class="n">serial_data</span><span class="p">,</span><span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+  <span class="c1"># We segregate the dependent variables seperately for returning the appropriate tuple</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">parsed_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">output_cols</span><span class="p">}</span>
+  <span class="k">return</span> <span class="n">parsed_data</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Read-data-using-tf.data">
+<a class="anchor" href="#Read-data-using-tf.data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Read data using <code>tf.data</code><a class="anchor-link" href="#Read-data-using-tf.data"> </a>
+</h3>
+<p>If we have created the data using spark, the files are put in the folder which we specify in the <code>save</code> method. This creates multiple TF-Record files. But it also contains the <code>_SUCCESS</code> file along with it. We might have to ignore that file while providing to the TF Data API to avoid a potential error. This can be done using a simple method as follows:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="k">def</span> <span class="nf">get_tf_records</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+  <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">'_SUCCESS'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, we can simply use this method to get all TF-Record files in the folder</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">training_records</span> <span class="o">=</span> <span class="n">get_tf_records</span><span class="p">(</span><span class="n">path_to_save</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next part is to feed the data into the <code>tf.data</code> API. The API has a built-in method <code>tf.data.Dataset.from_tensor_slices</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_tensor_slices</span><span class="p">(</span><span class="n">training_records</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
+    <strong>Note: </strong><code>tf.data</code> is an excellent API. It has lots of features that can improve the performance of the training. Some of the parameters like <code>num_parallel_calls</code>,<code>block_length</code>,<code>cycle_length</code> were useful in particular. The <code>shuffle</code> API allows us to provide a number of items to be picked up and shuffled to get <code>batch_size</code> items. The details on tuning <code>tf.data</code> for performance must be a post by itself.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Training-the-module">
+<a class="anchor" href="#Training-the-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training the module<a class="anchor-link" href="#Training-the-module"> </a>
+</h3>
+<p>To train the module we need to:</p>
+<ul>
+<li>Get the dataset</li>
+<li>Batch</li>
+<li>Decode</li>
+<li>Prefetch (not mandatory, just a performance tweak)</li>
+</ul>
+<p>TF Data API has simplified this pipeline process by using chaining. So, we can simply fit like:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">...</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_dataset</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">decode</span><span class="p">)</span><span class="o">.</span><span class="n">prefetch</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+<p>Along side TF-Records once the TF Data API is tuned we got performance improvement around 3.75-4x times. Just plain TF-Records was providing plain 3x times performance improvement on tabular data.</p>
+<p>We could see blogs such as <a href="https://sebastianwallkoetter.wordpress.com/2018/02/24/optimize-tf-input-pipeline/">these</a> by <em>Sebastian Wallkötter</em> which claim 7x improvement in Image dataset.</p>
+<p>Based on my understanding, the reasons on why I couldnt achieve that improvement are as follows:</p>
+<ul>
+<li>Data was stored in SSD (both CSV and TF-Records) which by itself does faster reads. Hence the impact of TF-Records being read faster became less predominant</li>
+<li>Training time for tabular batch are typically slow compared to image data as tabular data has fewer features. (making our performance bottle neck CPU bound)</li>
+</ul>
+<p>We could try to distribute training using a distribution strategy available in tensorflow in spark. Before distribution, we can consider if the issue is CPU/GPU bound (i.e) the performance bottle neck was on the time taken to read the data or train the model.</p>
+<p>For instance, GPU which does the training might be waiting for the CPU to get the training data for each batch, if the training finishes before retrieving the data for the next batch. This makes the performance bottle-neck <em>CPU bound</em>.</p>
+<p>If the training take more time than the time to retrieve the data, we might have CPU wait for GPU to complete the training. This makes the problem <em>GPU bound</em>.</p>
+<p>This idea of wheather an issue is CPU or GPU bound gives us idea on what further course of action can be done to improve the performance.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Useful-Sources:">
+<a class="anchor" href="#Useful-Sources:" aria-hidden="true"><span class="octicon octicon-link"></span></a>Useful Sources:<a class="anchor-link" href="#Useful-Sources:"> </a>
+</h2>
+<ul>
+<li><a href="https://github.com/tensorflow/ecosystem/tree/master/spark/spark-tensorflow-connector">Spark TensorFlow Connector</a></li>
+<li><a href="https://www.tensorflow.org/tutorials/load_data/tfrecord">Official Documentation</a></li>
+<li><a href="https://www.quora.com/Is-it-especially-good-to-use-tfRecord-as-input-data-format-if-I-am-using-Keras-Tensorflow">TF Records Good on Keras TensorFlow discussion on Quora</a></li>
+<li><a href="https://sebastianwallkoetter.wordpress.com/2018/02/24/optimize-tf-input-pipeline/">7x speedup with an optimized TensorFlow Input pipeline: TFRecords + Dataset API</a></li>
+<li><a href="https://medium.com/mostly-ai/tensorflow-records-what-they-are-and-how-to-use-them-c46bc4bbb564">Tensorflow Records? What they are and how to use them</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Kindly share your experience and perspectives on training with TF-Records and on spark clusters</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="nareshr8/ml_posts"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/ml_posts/tf-records/spark/py-spark/performance/2020/07/01/TF-Records-on-Spark.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/ml_posts/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/ml_posts/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/ml_posts/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Personal Blogging Platform</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
