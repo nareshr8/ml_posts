@@ -158,7 +158,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Creating-TF-Records">Creating TF-Records </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Library-required">Library required </a></li>
-<li class="toc-entry toc-h3"><a href="#Writing-the-Tf-Records">Writing the Tf-Records </a></li>
+<li class="toc-entry toc-h3"><a href="#Writing-the-TF-Records">Writing the TF-Records </a></li>
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#Reading-TF-Records">Reading TF-Records </a>
@@ -191,12 +191,12 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>TF-Records abbreviated as TensorFlow Records is one the data formats that has serveral benefits such as performance (time) of the Tensorflow training. Using just TF-Records, I was able to get a direct decrease the training time 3x times.</p>
+<p>TF-Records abbreviated as TensorFlow Records is one the data formats that has serveral benefits such as performance (time) of the Tensorflow training. Using just TF-Records, I was able to get a direct decrease in the training time 3x times.</p>
 <p>Most of the example blogs on TF-Records however, had images as example. I was working on a usecase of training a tabular data on spark cluster. I am posting this blog for easing out TF-Records adoption for scenarios such as mine. Hope this is useful.
 </p>
 <div class="flash">
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
-    <strong>Note: </strong>The intention of this post is about how to use TF-Records for better performances. We could run the training distributed across the cluster.Tensorflow API supports distributed training. We could also try <code>Horovod</code> which uses <code>Petastorm</code> file format to train the data in the spark cluster. But those topics are beyond the scope of this post
+    <strong>Note: </strong>The intention of this post is about how to use TF-Records for better performances. We could run the training distributed across the cluster. Tensorflow API supports distributed training. We could also try <code>Horovod</code> which uses <code>Petastorm</code> file format to train the data in the spark cluster. But those topics are beyond the scope of this post
 </div>
 
 </div>
@@ -205,11 +205,11 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Some Advantage of TF-Records are that, it</p>
+<p>Some Advantage of TF-Records are that, it :</p>
 <ul>
 <li>serialises data and stores. This means reduced space requirement for storage, faster data read and copy</li>
 <li>uses <a href="https://developers.google.com/protocol-buffers">Protocol Buffer</a> format to store data which makes reading of data faster. </li>
-<li>loads only required data into the memory. This is useful expecially for large datasets</li>
+<li>loads only required data into the memory. This is useful especially for large datasets</li>
 <li>The data is never brought to Python level and is always dealt with C++ level which makes training faster</li>
 <li>Tensorflow moves the data to GPU while training is performed</li>
 </ul>
@@ -240,7 +240,7 @@ window.onload = wrap_img;
 <h3 id="Library-required">
 <a class="anchor" href="#Library-required" aria-hidden="true"><span class="octicon octicon-link"></span></a>Library required<a class="anchor-link" href="#Library-required"> </a>
 </h3>
-<p>Creating the TF-Records in Spark cluster is easy. Thanks to the library <code>spark-tensorflow-connector_2.11-1.10.0.jar</code>.
+<p>Creating the TF-Records in Spark cluster is easy. Thanks to the Spark Tensorflow Connector (<code>spark-tensorflow-connector_2.11-1.10.0.jar</code>).
 </p>
 <div class="flash">
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 01-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 01-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg>
@@ -253,8 +253,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Writing-the-Tf-Records">
-<a class="anchor" href="#Writing-the-Tf-Records" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writing the Tf-Records<a class="anchor-link" href="#Writing-the-Tf-Records"> </a>
+<h3 id="Writing-the-TF-Records">
+<a class="anchor" href="#Writing-the-TF-Records" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writing the TF-Records<a class="anchor-link" href="#Writing-the-TF-Records"> </a>
 </h3>
 </div>
 </div>
@@ -288,11 +288,11 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We could save the data in an actual spark table as an backup.
+<p>We could save the data in an actual spark table as a backup.
 </p>
 <div class="flash flash-success">
     <svg class="octicon octicon-checklist octicon octicon-checklist" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M16 8.5l-6 6-3-3L8.5 10l1.5 1.5L14.5 7 16 8.5zM5.7 12.2l.8.8H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h7c.55 0 1 .45 1 1v6.5l-.8-.8c-.39-.39-1.03-.39-1.42 0L5.7 10.8a.996.996 0 000 1.41v-.01zM4 4h5V3H4v1zm0 2h5V5H4v1zm0 2h3V7H4v1zM3 9H2v1h1V9zm0-2H2v1h1V7zm0-2H2v1h1V5zm0-2H2v1h1V3z"></path></svg>
-    <strong>Tip: </strong>We might have to read the data from TF-Records for non tensorflow purpose as well (like data analysis). But it is typically slow to read the data (even using <code>spark.read</code> API)  compared to saving it as spark table (as <code>parquet</code> files). So I have a copy of the data in spark table and one in TF-Records format. I am using the spark table that I use for analysis of data to infer schema for retrieving the TF-Records. If you dont like to dump the data, all you need is the list of columns and its type to decode the data in the end.
+    <strong>Tip: </strong>We might have to read the data from TF-Records for non tensorflow purpose as well (like data analysis). But it is typically slow to read the data (even using <code>spark.read</code> API)  compared to saving it as spark table (as <code>parquet</code> files). So I have a copy of the data in spark table and one in TF-Records format. I am saving to a seperate spark table that I use for analysis of data. I am using the same table to infer schema for retrieving the TF-Records. If you dont like to dump the data, all you need is the list of columns and its type to decode the data in the end.
 </div>
 
 </div>
@@ -333,8 +333,7 @@ window.onload = wrap_img;
 <h3 id="Infering-Schema">
 <a class="anchor" href="#Infering-Schema" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infering Schema<a class="anchor-link" href="#Infering-Schema"> </a>
 </h3>
-<p>To read the records we need to have the list of features and their types, we could use the schema of the spark table.</p>
-<p>So we just read the spark table that we already stored to infer its schema</p>
+<p>To read the records we need to have the list of features and their types. We could use the backup spark table's schema to get that information. So we just read the spark table that we already stored to infer its schema.</p>
 
 </div>
 </div>
@@ -425,7 +424,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now that we have created the function, we can create features using that function <code>create_feature</code></p>
+<p>As we can create features using the above convenient function</p>
 
 </div>
 </div>
@@ -466,7 +465,7 @@ window.onload = wrap_img;
     <svg class="octicon octicon-zap" viewbox="0 0 10 16" version="1.1" width="10" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10 7H6l3-7-9 9h4l-3 7 9-9z"></path></svg>
     <strong>Important: </strong>If you used the common <code>tf.io.Example</code> API, you might face performance lag in decoding. This is because the data is decoded one record at a time. use of <code>tf.io.parse_example</code> will parse the data of the entire batch (refer the <a href="https://www.tensorflow.org/api_docs/python/tf/io/parse_example">documentation</a> for more understanding).
 </div>
-It is to be noted that while decoding the serial data we must return a tuple of independent and dependent variables. But the data we stored doesnt have the knowledge of which columns constitute to both. Hence we might have to handle that in our decode method
+<p>It is to be noted that while decoding the serial data we must return a tuple of independent and dependent variables. But the data we stored doesnt have the knowledge of which columns constitute to both. Hence we might have to handle that in our decode method</p>
 
 </div>
 </div>
@@ -500,7 +499,7 @@ It is to be noted that while decoding the serial data we must return a tuple of 
 <h3 id="Read-data-using-tf.data">
 <a class="anchor" href="#Read-data-using-tf.data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Read data using <code>tf.data</code><a class="anchor-link" href="#Read-data-using-tf.data"> </a>
 </h3>
-<p>If we have created the data using spark, the files are put in the folder which we specify in the <code>save</code> method. This creates multiple TF-Record files. But it also contains the <code>_SUCCESS</code> file along with it. We might have to ignore that file while providing to the TF Data API to avoid a potential error. This can be done using a simple method as follows:</p>
+<p>If we have created the data using spark, the files are put in the folder which we specify in the <code>save</code> method. This creates multiple TF-Record files. But it also contains the <code>_SUCCESS</code> file along with it. We might have to ignore that file while providing data to the TF Data API to avoid a potential error. This can be done using a simple method as follows:</p>
 
 </div>
 </div>
