@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Visualisation with Altair (WS - UI Setup) | nareshr8</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Visualisation with Altair (WS - UI Setup)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Visualising Data using Altair and creating a full stack application (Web service UI setup)" />
+<meta property="og:description" content="Visualising Data using Altair and creating a full stack application (Web service UI setup)" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html" />
+<meta property="og:site_name" content="nareshr8" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-15T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html","@type":"BlogPosting","headline":"Visualisation with Altair (WS - UI Setup)","dateModified":"2021-12-15T00:00:00-06:00","datePublished":"2021-12-15T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html"},"description":"Visualising Data using Altair and creating a full stack application (Web service UI setup)","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/ml_posts/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="nareshr8" /><link rel="shortcut icon" type="image/x-icon" href="/ml_posts/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Visualisation with Altair (WS - UI Setup) | nareshr8</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Visualisation with Altair (WS - UI Setup)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Visualising Data using Altair and creating a full stack application (Web service UI setup)" />
+<meta property="og:description" content="Visualising Data using Altair and creating a full stack application (Web service UI setup)" />
+<link rel="canonical" href="https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html" />
+<meta property="og:url" content="https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html" />
+<meta property="og:site_name" content="nareshr8" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-15T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html","@type":"BlogPosting","headline":"Visualisation with Altair (WS - UI Setup)","dateModified":"2021-12-15T00:00:00-06:00","datePublished":"2021-12-15T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://nareshr8.github.io/ml_posts/visualisation/altair/2021/12/15/altair-vis.html"},"description":"Visualising Data using Altair and creating a full stack application (Web service UI setup)","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://nareshr8.github.io/ml_posts/feed.xml" title="nareshr8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/ml_posts/">nareshr8</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/ml_posts/about/">About Me</a><a class="page-link" href="/ml_posts/search/">Search</a><a class="page-link" href="/ml_posts/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Visualisation with Altair (WS - UI Setup)</h1><p class="page-description">Visualising Data using Altair and creating a full stack application (Web service UI setup)</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-12-15T00:00:00-06:00" itemprop="datePublished">
+        Dec 15, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#visualisation">visualisation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/ml_posts/categories/#altair">altair</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#concerns-and-tools">Concerns and tools</a></li>
+<li class="toc-entry toc-h1"><a href="#altair">Altair</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#advantages">Advantages</a></li>
+<li class="toc-entry toc-h2"><a href="#existing-solutions-that-use-similar-setup">Existing Solutions that use similar setup</a></li>
+<li class="toc-entry toc-h2"><a href="#architecture">Architecture</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#components">Components</a></li>
+<li class="toc-entry toc-h3"><a href="#webservice">Webservice</a></li>
+<li class="toc-entry toc-h3"><a href="#ui">UI</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#vola">Vola!!!</a></li>
+</ul>
+</li>
+</ul><p>Visualisation of data has become important component for the business to make important decisions. More so in the data savvy world, as lots of data gets collected with internet tracking metrics and when internet of things come to picture, the amount of data that is collected is immense.</p>
+
+<p>However, understanding what we can do with the data is more important. This is generally done by a separate field of work as data analytics. But for the data analysts to inform the meaningful insights a slide deck or a web page is needed so that the data analyst can easily share the information.</p>
+
+<p>It is equally important for data scientists to provide meaningful insights on the predictions made by the model explaining why the model predicts what it predicts. Business teams typically dont do anything because “The computer says so..” keeping a company’s future at stack. Explaining the model and its prediction with a good visualisation is a well taught out way to express the prediction result data to easily make sense for business users.</p>
+
+<h2 id="concerns-and-tools">
+<a class="anchor" href="#concerns-and-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>Concerns and tools</h2>
+
+<p>To build the charts there are lots of tools that come handy. PowerBI, Tableau, Dash are some of the examples. However, they have some concerns:</p>
+
+<ul>
+  <li>They are commercial and typically costs thousands of dollars to use</li>
+  <li>They don’t provide live data and the underlying data can be updated in batches only.</li>
+</ul>
+
+<p>Other tools such as Voila and Stream-lit are free and open source and interactive but typically takes a couple of minutes to load when deployed in cloud.</p>
+
+<p>Since these tools are separate we have to go with a different strategy when we use charts such as coming up with a PowerBI , Voila,  Streamlit specific server that runs separately.</p>
+
+<p>Other straight forward tools such as D3.js Vega-lite needs UI expertise and consumes more time than the above solutions and is little out of reach for a typical data scientist or data analyst.</p>
+
+<p>What if… We have a tool that works in the same UI , Web service technology and can generate charts within 4 lines of code and provides interactivity. This search gave made us  reach Altair.</p>
+
+<h1 id="altair">
+<a class="anchor" href="#altair" aria-hidden="true"><span class="octicon octicon-link"></span></a>Altair</h1>
+
+<p>Altair is a open-source python library that is used to generate charts. “Whats special about Altair ?” you may ask. Yes, there a a bunch of python libraries that could generate charts. Matplotlib, Plotly, Seaborn are some of them that come to my mind.</p>
+
+<p>What makes Altair different from them is that we can generate json from the Altair library in vega-lite specification. “Ok.. So what ?” if you ask.. You can use vega-lite in UI to render this json into a meaningful graph in a webpage that gets rendered.</p>
+
+<h2 id="advantages">
+<a class="anchor" href="#advantages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advantages</h2>
+
+<p>If you ask “Why is it so important”, well.. We can:</p>
+
+<ul>
+  <li>Create a web-service API for charts using Altair. Charting solution doesn’t need to be considered as a separate solution that you have to deal with differently</li>
+  <li>Since python has connectors to almost all datasources, looking for connectors might not be an issue</li>
+  <li>If the charts are to be used by larger audience, load balancing solutions on web-services is well dealt with. Hence talent pool to address the issues is available</li>
+  <li>
+    <p>If the complete chart data is not from a single table or datasource, we can build the logic to deal with it.</p>
+
+    <p>Say we have couple of metrics from SQL, few more from Postgres and another one is a model prediction. We could customise the logic to pull the data from relevant datasources and append the model prediction and display the chart even before saving the solution.</p>
+  </li>
+  <li>Provide interactivity within the charts with opens to customise the graphs</li>
+  <li>Integration with authentication solutions such as OAuth for free</li>
+</ul>
+
+<p>I know there are ticks for some of the tools that I have mentioned. But Altair ticks the complete checklist.</p>
+
+<h2 id="existing-solutions-that-use-similar-setup">
+<a class="anchor" href="#existing-solutions-that-use-similar-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Existing Solutions that use similar setup</h2>
+
+<p>When I tested how reliable is altair, I had to check if there was tools built with these stack. Obviously, there are few products that use part or mentioned the complete setup being used.</p>
+
+<ul>
+  <li>
+    <p>Kibana</p>
+
+    <p>Popular for the ELK stack for visualisation, Kibana uses Vega specification to build the graph. They <a href="https://www.elastic.co/guide/en/kibana/current/vega.html">allow</a> to write Vega specifications to create customised dashboards.</p>
+  </li>
+  <li>
+    <p>Chartio</p>
+
+    <p>Chartio which is joining Atlassian by March 1, 2022 has written a nice blog on why they moved away from D3 to the Altair+Vega for the Nitro product <a href="https://chartio.com/blog/the-best-charts-for-our-customers-why-chartio-chose-vega/">here</a>.</p>
+  </li>
+</ul>
+
+<p>This is enough proof of the idea that we are going in a right direction. So, we started building a Proof of Concept to see how the whole thing pens out.</p>
+
+<h2 id="architecture">
+<a class="anchor" href="#architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<p>For the simplicity of understanding lets create a simple architecture diagram as we are trying to create a sample demo application to see if this can work out.</p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5CUntitled.png" alt="Untitled"></p>
+
+<h3 id="components">
+<a class="anchor" href="#components" aria-hidden="true"><span class="octicon octicon-link"></span></a>Components</h3>
+
+<ul>
+  <li><strong>Datasource</strong></li>
+</ul>
+
+<p>The data is in datasource. For the code that you are going to see, it might be a CSV but you might be easily able to connect to any datasource, as it is simple python code only.</p>
+
+<ul>
+  <li><strong>Web Service</strong></li>
+</ul>
+
+<p>The web service is written in FastAPI for the demo. It has advantages over Flask. But the solution can work with Flask as well. The idea is to create a web-service with Altair that could connect to the data and generate JSON in vega lite specification using Altair</p>
+
+<ul>
+  <li><strong>UI</strong></li>
+</ul>
+
+<p>UI can be built using any technology (such as React here). Our idea is to use Vega JS to understand the json response from the web-service and generate the chart. This reduces the UI requirement knowledge for development as most of the designing such as chart creation, color selection and placement of charts are done in the web-service layer itself.</p>
+
+<p>Lets look at the completed product before we look into the code</p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5Cuntitled.gif" alt="Untitled"></p>
+
+<h3 id="webservice">
+<a class="anchor" href="#webservice" aria-hidden="true"><span class="octicon octicon-link"></span></a>Webservice</h3>
+
+<aside>
+💡 We are using CSV file for the demo. Though we can connect to all we need is a pandas dataframe with data which can be got from any datasource using Python.
+
+</aside>
+
+<p>We used <em>FastAPI **</em>**python package here. But our solution is not dependent on that. If you are using Flask, it would work as well.</p>
+
+<p>The entirety of the code that creates the chart with selectable legends is below</p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5CUntitled%202.png" alt="Untitled"></p>
+
+<p>First install the required libraries including <strong>altair</strong></p>
+
+<p>Steps in the function:</p>
+
+<ol>
+  <li>We first create a selection that will work on <em>legends</em> and filter the <strong>Year</strong> field.</li>
+  <li>We set a condition to change the opacity of the lines based on the selection that we make</li>
+  <li>Create a altair chart with the pandas <em>dataframe</em> with X-Axis as <strong>Month</strong> and Y-Axis as <strong>value</strong>. We can also set other options like opacity, color, tooltip, height and width of the graph</li>
+  <li>Convert the chart to json</li>
+  <li>Return the converted JSON</li>
+</ol>
+
+<h3 id="ui">
+<a class="anchor" href="#ui" aria-hidden="true"><span class="octicon octicon-link"></span></a>UI</h3>
+
+<p>UI is built on react for the demo.</p>
+
+<p>We include vega related libraries in <strong>package.json</strong></p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5CUntitled%203.png" alt="Untitled"></p>
+
+<p>This is the screenshot of what we have added in our project.</p>
+
+<p>Once we have added the desired packages, in the component which you want the graph to be rendered use the <strong>Vega</strong> tag and in spec specify the URL of the web-service which gives the json response in vega-specification such as the above.</p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5CUntitled%204.png" alt="Untitled"></p>
+
+<aside>
+💡 Web-service that we have written is running in 8000 while UI is running in port 3000 in local.
+
+</aside>
+
+<p>Now, we can run the Web-service and UI together.</p>
+
+<h2 id="vola">
+<a class="anchor" href="#vola" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vola!!!</h2>
+
+<p>The application is up and running.</p>
+
+<p><img src="..%5Cimages%5Cposts%5C2021-12-15-altair-vis%5CUntitled%205.png" alt="Untitled"></p>
+
+<p>For data scientist or non UI python developers, its easy to create charts in Web-service with complete control on the rendering graph such as  even the height and width of the graph to be rendered.</p>
+
+  </div><a class="u-url" href="/ml_posts/visualisation/altair/2021/12/15/altair-vis.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/ml_posts/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/ml_posts/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/ml_posts/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Personal Blogging Platform</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/nareshr8" title="nareshr8"><svg class="svg-icon grey"><use xlink:href="/ml_posts/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
