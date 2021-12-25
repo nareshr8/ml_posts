@@ -139,3 +139,5 @@ The application is up and running.
 ![Untitled](/ml_posts/images/posts/2021-12-15-altair-vis/Untitled%205.png)
 
 For data scientist or non UI python developers, its easy to create charts in Web-service with complete control on the rendering graph such as  even the height and width of the graph to be rendered.
+
+> The [UI code](https://github.com/nareshr8/altair-ui) and [Web Service code](https://github.com/nareshr8/altair-ws) for your reference is available
