@@ -68,7 +68,7 @@ This is enough proof of the idea that we are going in a right direction. So, we 
 
 For the simplicity of understanding lets create a simple architecture diagram as we are trying to create a sample demo application to see if this can work out.
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\Untitled.png)
+![Untitled](/images/posts/2021-12-15-altair-vis/Untitled.png)
 
 ### Components
 
@@ -86,7 +86,7 @@ UI can be built using any technology (such as React here). Our idea is to use Ve
 
 Lets look at the completed product before we look into the code
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\untitled.gif)
+![Untitled](/images/posts/2021-12-15-altair-vis/untitled.gif)
 
 ### Webservice
 
@@ -99,7 +99,7 @@ We used *FastAPI *****python package here. But our solution is not dependent on 
 
 The entirety of the code that creates the chart with selectable legends is below 
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\Untitled%202.png)
+![Untitled](/images/posts/2021-12-15-altair-vis/Untitled%202.png)
 
 First install the required libraries including **altair**
 
@@ -117,13 +117,14 @@ UI is built on react for the demo.
 
 We include vega related libraries in **package.json**
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\Untitled%203.png)
+![Untitled](..\
+\posts\2021-12-15-altair-vis\Untitled%203.png)
 
 This is the screenshot of what we have added in our project.
 
 Once we have added the desired packages, in the component which you want the graph to be rendered use the **Vega** tag and in spec specify the URL of the web-service which gives the json response in vega-specification such as the above.
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\Untitled%204.png)
+![Untitled](/images/posts/2021-12-15-altair-vis/Untitled%204.png)
 
 <aside>
 💡 Web-service that we have written is running in 8000 while UI is running in port 3000 in local.
@@ -136,6 +137,6 @@ Now, we can run the Web-service and UI together.
 
 The application is up and running.
 
-![Untitled](..\images\posts\2021-12-15-altair-vis\Untitled%205.png)
+![Untitled](/images/posts/2021-12-15-altair-vis/Untitled%205.png)
 
 For data scientist or non UI python developers, its easy to create charts in Web-service with complete control on the rendering graph such as  even the height and width of the graph to be rendered.
